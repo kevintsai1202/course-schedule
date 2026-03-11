@@ -17,7 +17,7 @@
 | T11 | 更新技能為讀取 course 目錄並寫入發布紀錄 | Completed | 已支援本地 course 目錄、公開資產同步與發布紀錄 |
 | T12 | 將既有課程 markdown 轉為 frontmatter 並更新技能說明 | Completed | 已完成新格式轉換規則與技能文件更新 |
 | T13 | 修正首頁課程資料快取導致需手動強制重新整理 | Completed | 已加入 cache-busting、no-store 與測試 |
-| T14 | 修正 `.gitignore` 誤傷公開課程圖片資產 | In Progress | 需讓根目錄 `course` 與公開 `published-assets` 明確分離 |
+| T14 | 修正 `.gitignore` 誤傷公開課程圖片資產 | Completed | 已改為只忽略根目錄 `/course/` 並完成實際發布驗證 |
 
 ## 執行紀錄
 
@@ -38,3 +38,4 @@
 - 2026-03-12：開始進行 T13，準備修正首頁抓取 `course-data.json` 的快取問題。
 - 2026-03-12：完成 T13，已為首頁課程資料請求加入 cache-busting 與 no-store，並補上測試。
 - 2026-03-12：開始進行 T14，準備修正 `.gitignore` 對 `public/published-assets/**/image/course/` 的誤判。
+- 2026-03-12：完成 T14，已修正 `.gitignore` 範圍並以 `spring-ai-free` 實際發布驗證通過。
