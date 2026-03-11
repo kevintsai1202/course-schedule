@@ -6,6 +6,8 @@
 - Source content root: local `course/` directory
 - `course/` is local-only and should stay ignored by git
 - Published images are copied to tracked `public/published-assets/<course-slug>/...`
+- Legacy markdown without frontmatter should be converted in place before publish
+- When a required field cannot be inferred, leave a `TODO` placeholder instead of inventing data
 - Issue format must match these exact section titles:
   - `課程大綱`
   - `課程內容`

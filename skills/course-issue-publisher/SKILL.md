@@ -12,6 +12,8 @@ Use this skill when the user wants you to publish course content that already ex
 The skill should:
 
 - read one course folder or batch-publish all unpublished course folders
+- detect whether the markdown already has frontmatter
+- convert legacy markdown into frontmatter format before publishing when needed
 - parse the markdown file and its frontmatter
 - copy referenced local images into tracked published assets
 - create the GitHub Issue in the required repo format
@@ -25,14 +27,16 @@ Each course uses one folder:
 ```text
 course/
   some-course/
-    course.md
+    course.md / index.md / context.md
     image/
       cover.png
       demo.png
     .published.json
 ```
 
-The markdown file must contain frontmatter:
+Each course folder should keep one publishable markdown file. The script prefers `course.md`, `index.md`, then `context.md`.
+
+That markdown file must contain frontmatter:
 
 ```md
 ---
@@ -56,12 +60,18 @@ Read [course-template.md](e:/github/course-schedule/skills/course-issue-publishe
 ## Workflow
 
 1. Read [project-context.md](e:/github/course-schedule/skills/course-issue-publisher/references/project-context.md) if repo-specific behavior matters.
-2. Decide the source mode:
+2. Check whether the markdown already has frontmatter.
+3. If the markdown is legacy content without frontmatter:
+   - preserve the original body content
+   - add frontmatter fields at the top
+   - infer what you can from the existing text
+   - if a required field is unknown, leave a clearly visible placeholder like `TODO`
+4. Decide the source mode:
    - one folder: `--course-dir`
    - all unpublished folders: `--course-root course --publish-all`
-3. Run the project script instead of manually composing `gh issue create`.
-4. Inspect the returned JSON.
-5. Report the issue URL, page URL, publish result, and whether the folder was skipped because of `.published.json`.
+5. Run the project script instead of manually composing `gh issue create`.
+6. Inspect the returned JSON.
+7. Report the issue URL, page URL, publish result, and whether the folder was skipped because of `.published.json`.
 
 ## Commands
 
@@ -99,7 +109,8 @@ Keep the answer concise and include:
 - Let the script copy only referenced images into tracked `public/published-assets/`.
 - If `.published.json` exists, treat that folder as already published unless the user explicitly asks to force republish.
 - If the user asks to republish anyway, use `--force`.
-- If frontmatter is missing required fields, report the exact missing or invalid fields.
+- If frontmatter is missing, rewrite the file into the new format first.
+- If a required field cannot be inferred from the original content, leave `TODO` and tell the user what still needs confirmation.
 
 ## Example Intent
 

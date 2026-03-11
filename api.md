@@ -124,7 +124,7 @@ node scripts/publish-course-issue.mjs --course-root course --publish-all
 ```text
 course/
   vibe-coding/
-    course.md
+    course.md / index.md / context.md
     image/
       cover.png
       demo.png
@@ -133,7 +133,7 @@ course/
 
 ### 4.3 Markdown 格式
 
-課程目錄中的 markdown 檔必須包含 frontmatter：
+課程目錄中的 markdown 檔必須只有一個主要發佈檔，腳本優先尋找 `course.md`、`index.md`、`context.md`，且該檔案必須包含 frontmatter：
 
 ```md
 ---
@@ -156,6 +156,7 @@ image: image/context/cover.png
 - `image` 可省略；若省略則使用內容中的第一張圖片作為封面
 - 內容中的相對圖片路徑會自動轉成 raw GitHub URL
 - `.published.json` 存在時，預設視為已發布，不再重複上傳
+- 若舊 markdown 尚未使用 frontmatter，需先轉換後再發布
 
 ### 4.4 JSON Input
 
@@ -228,6 +229,7 @@ image: image/context/cover.png
 
 - 建 Issue 前先用與 workflow 相同的驗證器做本地檢查。
 - `--course-dir` 模式會先讀 markdown frontmatter，再將相對圖片改寫為 raw GitHub URL。
+- 若偵測到舊 markdown 無 frontmatter，技能層需先將內容改寫為新格式，再交給腳本發布。
 - 發 Issue 後輪詢標籤狀態與 `course-data.json`，確認頁面是否已上線。
 - `--close-after-verify` 只用於測試，不作為正式發布預設行為，且會等待該課程自網站移除。
 - 課程正式發布成功後，腳本會在該目錄寫入 `.published.json`，之後預設略過不再重傳。

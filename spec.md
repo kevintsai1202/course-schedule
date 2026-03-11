@@ -157,6 +157,9 @@ function buildSiteData(issues):
   }
 
 function publishCourseDirectory(courseDir):
+  if markdown has no frontmatter:
+    rewrite markdown into frontmatter format first
+
   if published record exists and not force:
     return skipped
 
@@ -356,3 +359,4 @@ stateDiagram-v2
 - `price = 0` 時顯示 `免費`。
 - 手機與桌機皆可正常閱讀與操作。
 - 專案技能可從 `course` 目錄讀取尚未發布的課程，自動建立合法 Issue，並在課程目錄下寫入發布紀錄。
+- 若舊課程 markdown 尚未使用 frontmatter，技能會先轉換為新格式，再進入發布流程。
