@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-03-12T20:00:00+08:00",
+  "timezone": "Asia/Taipei",
+  "featuredCourseId": "issue-101",
+  "courses": [
+    {
+      "id": "issue-101",
+      "issueNumber": 101,
+      "title": "AI 自動化免費講座",
+      "outline": "看懂 GitHub Actions、自動更新網頁與內容維運流程。",
+      "content": "用一場晚間講座快速掌握 AI 流程自動化、Issue 驅動內容發布與 GitHub Pages 的實作模式。",
+      "startAt": "2026-03-20T19:00:00+08:00",
+      "endAt": "2026-03-20T21:00:00+08:00",
+      "price": 0,
+      "notes": "適合想把內容網站自動化的創作者與工程師。",
+      "signupUrl": "https://example.com/free-talk",
+      "imageUrl": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80",
+      "isFree": true,
+      "createdBy": "kevintsai",
+      "labels": ["publish-ready", "published"],
+      "updatedAt": "2026-03-12T20:00:00Z"
+    },
+    {
+      "id": "issue-102",
+      "issueNumber": 102,
+      "title": "從零打造個人課程網站",
+      "outline": "從資訊架構、視覺設計到 GitHub Pages 發布一次串起來。",
+      "content": "完整拆解課程清單頁、CTA 設計、月曆檢視與內容維護工作流，建立可長期維護的靜態網站。",
+      "startAt": "2026-03-28T14:00:00+08:00",
+      "endAt": "2026-03-28T17:00:00+08:00",
+      "price": 1800,
+      "notes": "附實作範例與部署講義。",
+      "signupUrl": "https://example.com/paid-course",
+      "imageUrl": "https://images.unsplash.com/photo-1491841550275-ad7854e35ca6?auto=format&fit=crop&w=1200&q=80",
+      "isFree": false,
+      "createdBy": "kevintsai",
+      "labels": ["publish-ready", "published"],
+      "updatedAt": "2026-03-12T20:00:00Z"
+    }
+  ]
+}
+

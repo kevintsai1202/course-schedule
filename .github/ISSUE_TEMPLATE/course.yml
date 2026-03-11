@@ -1,0 +1,82 @@
+name: 新增課程／講座
+description: 用固定格式新增凱文大叔的課程或免費講座
+title: "[課程] "
+labels:
+  - schedule-entry
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請依序填寫以下欄位。送出後系統會自動驗證：
+
+        - 時間格式：`YYYY-MM-DD HH:mm`
+        - 售價：免費請填 `0`
+        - 圖片：可直接拖曳圖片到圖片欄位，保留產生的 markdown
+  - type: textarea
+    id: outline
+    attributes:
+      label: 課程大綱
+      description: 簡短列出本課程或講座的主軸
+      placeholder: |
+        - GitHub Pages 靜態站規劃
+        - GitHub Issue 自動驗證
+        - 課程網站視覺設計
+    validations:
+      required: true
+  - type: textarea
+    id: content
+    attributes:
+      label: 課程內容
+      description: 詳細描述活動內容
+      placeholder: |
+        這場講座會示範如何用 GitHub Pages、GitHub Actions 與 Issue Forms 自動更新課程網站。
+    validations:
+      required: true
+  - type: input
+    id: start_at
+    attributes:
+      label: 開始時間
+      description: 使用台北時區，格式為 YYYY-MM-DD HH:mm
+      placeholder: 2026-03-20 19:00
+    validations:
+      required: true
+  - type: input
+    id: end_at
+    attributes:
+      label: 結束時間
+      description: 使用台北時區，格式為 YYYY-MM-DD HH:mm
+      placeholder: 2026-03-20 21:00
+    validations:
+      required: true
+  - type: input
+    id: price
+    attributes:
+      label: 售價
+      description: 免費請填 0
+      placeholder: 0
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: 其他備註
+      description: 可空白
+      placeholder: 名額有限，報名完成後會收到直播連結。
+  - type: input
+    id: signup_url
+    attributes:
+      label: 報名連結
+      description: 需為 http 或 https 網址
+      placeholder: https://example.com
+    validations:
+      required: true
+  - type: textarea
+    id: image
+    attributes:
+      label: 圖片
+      description: 可直接拖圖進來，保留 markdown 或貼上公開圖片網址
+      placeholder: |
+        ![cover](https://github.com/user-attachments/assets/your-image-id)
+    validations:
+      required: true
+
