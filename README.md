@@ -36,6 +36,14 @@ kevintsai
 4. 網站重新建置並部署
 5. 部署成功後加上 `published`
 
+## 專案技能
+
+- 技能目錄：`skills/course-issue-publisher/`
+- 發布腳本：`node scripts/publish-course-issue.mjs --json <path>`
+- 測試模式：`node scripts/publish-course-issue.mjs --json <path> --close-after-verify`
+
+這個技能讓代理可直接根據對話提供的欄位建立合法課程 Issue，並等待 GitHub Pages 更新後回報結果。
+
 ## 標籤說明
 
 - `publish-ready`：驗證通過，可發布

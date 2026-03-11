@@ -6,6 +6,7 @@
 - 部署：`GitHub Pages`
 - 內容輸入：`GitHub Issue Forms`
 - 自動化：`GitHub Actions`
+- 專案技能：`skills/course-issue-publisher`
 - 資料來源：GitHub Issue 經驗證後轉為靜態 `JSON`
 - 時區：`Asia/Taipei`
 
@@ -13,6 +14,7 @@
 - 靜態站適合 GitHub Pages，部署成本最低。
 - Issue Forms 可降低手動輸入錯誤，適合非技術維護者。
 - GitHub Actions 可串接驗證、資料轉換與自動部署。
+- 專案技能搭配本地腳本，可讓代理在對話中接收課程資料後直接發布 Issue 並確認上站結果。
 - 前端不引入大型 UI 框架，維持 GitHub Pages 輕量與可維護性。
 
 ## 2. 資料模型
@@ -178,6 +180,8 @@ flowchart LR
     A[validate-issue.ts] --> B[issue-parser.ts]
     C[generate-course-data.ts] --> B
     C --> D[github.ts]
+    E[publish-course-issue.ts] --> F[course-issue-template.ts]
+    E --> G[gh CLI]
 ```
 
 ## 8. 序列圖
@@ -189,8 +193,10 @@ sequenceDiagram
     participant Action as GitHub Actions
     participant API as GitHub API
     participant Pages as GitHub Pages
+    participant Skill as 專案技能
 
-    User->>Issue: 建立或修改課程 Issue
+    User->>Skill: 提供課程欄位資料
+    Skill->>Issue: 建立課程 Issue
     Issue->>Action: 觸發 issues event
     Action->>API: 讀取 Issue 與標籤
     Action->>Action: 驗證欄位
@@ -250,6 +256,11 @@ classDiagram
       +buildSiteData(issues)
       +pickFeaturedCourse(courses)
     }
+    class CourseIssuePublisher {
+      +buildIssueBody(payload)
+      +createIssue(payload)
+      +waitForPublish(issueNumber)
+    }
     class GitHubClient {
       +listOpenIssues()
       +updateLabels()
@@ -259,6 +270,8 @@ classDiagram
     IssueValidator --> IssueParser
     CourseDataBuilder --> IssueValidator
     CourseDataBuilder --> GitHubClient
+    CourseIssuePublisher --> IssueValidator
+    CourseIssuePublisher --> GitHubClient
 ```
 
 ## 11. 流程圖
@@ -299,3 +312,4 @@ stateDiagram-v2
 - 首頁包含近期焦點、月曆檢視與收折卡片清單。
 - `price = 0` 時顯示 `免費`。
 - 手機與桌機皆可正常閱讀與操作。
+- 專案技能可根據對話提供的欄位直接建立合法 Issue，並回報 Issue 與頁面發布結果。

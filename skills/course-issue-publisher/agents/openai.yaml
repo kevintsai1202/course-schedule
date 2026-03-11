@@ -1,0 +1,5 @@
+interface:
+  display_name: "Course Issue Publisher"
+  short_description: "Publish course issues to GitHub and verify the Pages result"
+  default_prompt: "Publish this course entry to the course-schedule repo, wait for validation, and confirm the GitHub Pages result."
+
