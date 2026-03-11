@@ -11,7 +11,7 @@
 | T5 | 實作 Issue 驗證、標籤狀態機與資料產生腳本 | Completed | 驗證與 JSON 產生腳本已完成 |
 | T6 | 建立 GitHub Actions 與 GitHub Pages 部署 | Completed | issue / push 皆可重建部署 |
 | T7 | 補齊測試、範例資料與驗證命令 | Completed | 測試與 build 均已通過 |
-| T8 | 初始化 Git、建立 GitHub Repo 並推送主分支 | In Progress | 使用 gh 建立遠端倉庫 |
+| T8 | 初始化 Git、建立 GitHub Repo 並推送主分支 | Completed | Repo、Pages、變數與標籤已建立 |
 
 ## 執行紀錄
 
@@ -20,3 +20,4 @@
 - 2026-03-12：完成 T2、T3，測試與建置通過，開始進行 T4。
 - 2026-03-12：完成 T4、T5、T6、T7，整體測試與建置再次通過。
 - 2026-03-12：開始進行 T8，準備建立 GitHub repo 並推送主分支。
+- 2026-03-12：完成 T8，已建立 GitHub repo、推送主分支並成功部署 Pages。
