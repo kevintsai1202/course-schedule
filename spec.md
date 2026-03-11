@@ -4,7 +4,7 @@
 
 - 前端：`Vite + TypeScript + 原生 CSS`
 - 部署：`GitHub Pages`
-- 內容輸入：`GitHub Issue Forms`
+- 內容輸入：`GitHub Issue Forms`、`course/<課程目錄>/課程 markdown`
 - 自動化：`GitHub Actions`
 - 專案技能：`skills/course-issue-publisher`
 - 資料來源：GitHub Issue 經驗證後轉為靜態 `JSON`
@@ -14,7 +14,7 @@
 - 靜態站適合 GitHub Pages，部署成本最低。
 - Issue Forms 可降低手動輸入錯誤，適合非技術維護者。
 - GitHub Actions 可串接驗證、資料轉換與自動部署。
-- 專案技能搭配本地腳本，可讓代理在對話中接收課程資料後直接發布 Issue 並確認上站結果。
+- 專案技能搭配本地腳本，可從 `course` 目錄讀取課程 markdown、圖片與發布紀錄，直接發布 Issue 並確認上站結果。
 - 前端不引入大型 UI 框架，維持 GitHub Pages 輕量與可維護性。
 
 ## 2. 資料模型
@@ -56,6 +56,17 @@
 | featuredCourseId | string \| null | 首頁焦點課程 |
 | courses | Course[] | 尚未過期且可發布課程 |
 
+### 2.4 CourseDirectoryRecord
+
+| 欄位 | 型別 | 說明 |
+| --- | --- | --- |
+| issueNumber | number | 已建立的 GitHub Issue 編號 |
+| issueUrl | string | 已發布的 Issue 網址 |
+| pageUrl | string | GitHub Pages 網址 |
+| publishedAt | string | 首次發布完成時間 |
+| sourceMarkdown | string | 使用的 markdown 檔案相對路徑 |
+| repository | string | 發布目標倉庫 |
+
 ## 3. 關鍵流程
 
 ### 3.1 Issue 建立與發布流程
@@ -84,6 +95,20 @@ flowchart TD
     E --> G[重建網站資料]
     F --> G
     G --> H[網站更新後顯示最新狀態]
+```
+
+### 3.3 課程目錄發佈流程
+
+```mermaid
+flowchart TD
+    A[使用者將課程資料放入 course 子目錄] --> B[技能掃描目錄中的 markdown 與 image]
+    B --> C{是否已有 .published.json?}
+    C -- 是 --> D[略過該課程]
+    C -- 否 --> E[解析 frontmatter 與 markdown 內容]
+    E --> F[將相對圖片路徑轉為 raw GitHub URL]
+    F --> G[建立課程 Issue]
+    G --> H[等待 publish-ready 與頁面上線]
+    H --> I[寫入 .published.json]
 ```
 
 ## 4. 虛擬碼
@@ -130,6 +155,19 @@ function buildSiteData(issues):
     featuredCourseId: featured?.id,
     courses: validatedCourses
   }
+
+function publishCourseDirectory(courseDir):
+  if published record exists and not force:
+    return skipped
+
+  markdown = read course markdown
+  metadata = parse frontmatter
+  content = rewrite markdown image links to raw GitHub URLs
+  payload = map metadata + markdown content to issue fields
+  validate payload locally
+  create issue
+  wait for publish-ready and published
+  write .published.json
 ```
 
 ## 5. 系統脈絡圖
@@ -140,6 +178,8 @@ flowchart LR
     GI --> GA[GitHub Actions]
     GA --> GHAPI[GitHub REST API]
     GA --> JSON[course-data.json]
+    CD[course 目錄] --> SK[專案技能與發布腳本]
+    SK --> GI
     JSON --> FE[GitHub Pages 靜態前端]
     FE --> V[網站訪客]
 ```
@@ -181,6 +221,7 @@ flowchart LR
     C[generate-course-data.ts] --> B
     C --> D[github.ts]
     E[publish-course-issue.ts] --> F[course-issue-template.ts]
+    E --> H[course-directory-parser.ts]
     E --> G[gh CLI]
 ```
 
@@ -195,7 +236,7 @@ sequenceDiagram
     participant Pages as GitHub Pages
     participant Skill as 專案技能
 
-    User->>Skill: 提供課程欄位資料
+    User->>Skill: 指定 course 目錄或單一課程目錄
     Skill->>Issue: 建立課程 Issue
     Issue->>Action: 觸發 issues event
     Action->>API: 讀取 Issue 與標籤
@@ -257,9 +298,11 @@ classDiagram
       +pickFeaturedCourse(courses)
     }
     class CourseIssuePublisher {
+      +parseCourseDirectory(path)
       +buildIssueBody(payload)
-      +createIssue(payload)
+      +createIssueFromDirectory(path)
       +waitForPublish(issueNumber)
+      +writePublishedRecord(path)
     }
     class GitHubClient {
       +listOpenIssues()
@@ -312,4 +355,4 @@ stateDiagram-v2
 - 首頁包含近期焦點、月曆檢視與收折卡片清單。
 - `price = 0` 時顯示 `免費`。
 - 手機與桌機皆可正常閱讀與操作。
-- 專案技能可根據對話提供的欄位直接建立合法 Issue，並回報 Issue 與頁面發布結果。
+- 專案技能可從 `course` 目錄讀取尚未發布的課程，自動建立合法 Issue，並在課程目錄下寫入發布紀錄。

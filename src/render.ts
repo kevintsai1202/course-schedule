@@ -1,9 +1,9 @@
 import type { Course, SiteData } from "./types";
+import { renderMarkdown } from "./markdown";
 import { renderCalendar } from "./calendar";
 import {
   escapeHtml,
   formatDateRange,
-  formatMultilineText,
   formatPrice,
   pickFeaturedCourse,
   sortCoursesByStartAt,
@@ -126,18 +126,17 @@ function renderCourseCard(course: Course): string {
       <div class="course-card__detail">
         <section>
           <h4>課程大綱</h4>
-          ${formatMultilineText(course.outline)}
+          <div class="course-markdown">${renderMarkdown(course.outline)}</div>
         </section>
         <section>
           <h4>課程內容</h4>
-          ${formatMultilineText(course.content)}
+          <div class="course-markdown">${renderMarkdown(course.content)}</div>
         </section>
         <section>
           <h4>其他備註</h4>
-          ${formatMultilineText(course.notes || "目前沒有其他備註。")}
+          <div class="course-markdown">${renderMarkdown(course.notes || "目前沒有其他備註。")}</div>
         </section>
       </div>
     </details>
   `;
 }
-

@@ -2,7 +2,7 @@
 
 ## 概述
 
-本專案無傳統後端服務，對外介面分為兩類：
+本專案無傳統後端服務，對外介面分為三類：
 - GitHub Issue Form 輸入契約
 - GitHub Pages 提供的靜態資料介面
 - 本地發布工具與專案技能介面
@@ -115,9 +115,49 @@ https://example.com
 
 ```powershell
 node scripts/publish-course-issue.mjs --json <path-to-json>
+node scripts/publish-course-issue.mjs --course-dir <path-to-course-folder>
+node scripts/publish-course-issue.mjs --course-root course --publish-all
 ```
 
-### 4.2 JSON Input
+### 4.2 課程目錄格式
+
+```text
+course/
+  vibe-coding/
+    course.md
+    image/
+      cover.png
+      demo.png
+    .published.json
+```
+
+### 4.3 Markdown 格式
+
+課程目錄中的 markdown 檔必須包含 frontmatter：
+
+```md
+---
+title: Google Antigravity Vibe Coding 實戰工作坊
+outline: 理解 Vibe Coding、Antigravity、Skills、MCP 與四個實作專案
+startAt: 2026-04-18 09:00
+endAt: 2026-04-19 17:00
+price: 0
+notes: 線上報名備註填寫我是凱文大叔粉絲可享團報優惠
+signupUrl: https://example.com
+image: image/context/cover.png
+---
+
+這裡開始是課程內容 markdown，可直接放圖片：
+
+![封面](image/context/cover.png)
+```
+
+規則：
+- `image` 可省略；若省略則使用內容中的第一張圖片作為封面
+- 內容中的相對圖片路徑會自動轉成 raw GitHub URL
+- `.published.json` 存在時，預設視為已發布，不再重複上傳
+
+### 4.4 JSON Input
 
 ```json
 {
@@ -133,18 +173,22 @@ node scripts/publish-course-issue.mjs --json <path-to-json>
 }
 ```
 
-### 4.3 CLI Options
+### 4.5 CLI Options
 
 | 參數 | 說明 |
 | --- | --- |
 | `--json <path>` | 從 JSON 檔案讀取課程資料 |
 | `--stdin` | 從標準輸入讀取 JSON |
+| `--course-dir <path>` | 從單一課程目錄讀取 markdown 與圖片 |
+| `--course-root <path>` | 指定課程根目錄，搭配 `--publish-all` 使用 |
+| `--publish-all` | 發布 `course-root` 底下所有尚未發布的課程目錄 |
 | `--repo <owner/repo>` | 指定發文倉庫，預設 `kevintsai1202/course-schedule` |
 | `--wait-seconds <n>` | 等待驗證與頁面發布秒數，預設 `180` |
 | `--dry-run` | 只做本地格式驗證與 body 預覽，不建立 Issue |
 | `--close-after-verify` | 驗證成功後自動關閉 Issue，供測試用途 |
+| `--force` | 忽略 `.published.json` 強制重新發布 |
 
-### 4.4 Output
+### 4.6 Output
 
 ```json
 {
@@ -161,11 +205,32 @@ node scripts/publish-course-issue.mjs --json <path-to-json>
 }
 ```
 
-### 4.5 規則
+批次發布時輸出格式：
+
+```json
+{
+  "ok": true,
+  "repository": "kevintsai1202/course-schedule",
+  "results": [
+    {
+      "ok": true,
+      "courseDir": "course/vibe-coding",
+      "issueNumber": 12,
+      "issueUrl": "https://github.com/kevintsai1202/course-schedule/issues/12",
+      "pagePublished": true,
+      "skipped": false
+    }
+  ]
+}
+```
+
+### 4.7 規則
 
 - 建 Issue 前先用與 workflow 相同的驗證器做本地檢查。
+- `--course-dir` 模式會先讀 markdown frontmatter，再將相對圖片改寫為 raw GitHub URL。
 - 發 Issue 後輪詢標籤狀態與 `course-data.json`，確認頁面是否已上線。
 - `--close-after-verify` 只用於測試，不作為正式發布預設行為，且會等待該課程自網站移除。
+- 課程正式發布成功後，腳本會在該目錄寫入 `.published.json`，之後預設略過不再重傳。
 
 ## 5. GitHub Actions 事件契約
 

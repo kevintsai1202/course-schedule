@@ -3,6 +3,9 @@
 - Repository: `kevintsai1202/course-schedule`
 - GitHub Pages: `https://kevintsai1202.github.io/course-schedule/`
 - Publish script: `node scripts/publish-course-issue.mjs`
+- Source content root: local `course/` directory
+- `course/` is local-only and should stay ignored by git
+- Published images are copied to tracked `public/published-assets/<course-slug>/...`
 - Issue format must match these exact section titles:
   - `課程大綱`
   - `課程內容`
@@ -21,10 +24,23 @@
 - Test-only publication can use:
 
 ```powershell
-node scripts/publish-course-issue.mjs --json <temp-json-path> --close-after-verify
+node scripts/publish-course-issue.mjs --course-dir course/<folder> --close-after-verify
 ```
 
 - In test-only mode, the script waits for publish success first, then closes the issue and waits for the course to disappear from `course-data.json`.
+- Formal publish of one folder uses:
+
+```powershell
+node scripts/publish-course-issue.mjs --course-dir course/<folder>
+```
+
+- Batch publish uses:
+
+```powershell
+node scripts/publish-course-issue.mjs --course-root course --publish-all
+```
+
+- After successful formal publish, the script writes `.published.json` into that course folder and will skip it next time unless `--force` is used.
 
 - Production publication should normally use:
 

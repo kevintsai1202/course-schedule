@@ -1,96 +1,108 @@
 ---
 name: course-issue-publisher
-description: Publish a course or lecture entry to the `kevintsai1202/course-schedule` GitHub repository and verify that it appears on the GitHub Pages site. Use this skill whenever the user gives course data such as title, outline, content, date/time, price, notes, signup link, or image and wants you to create the repo issue for them, validate the format, and confirm the web page result.
+description: Publish course entries from the local `course/` directory to the `kevintsai1202/course-schedule` GitHub repository and verify that they appear on the GitHub Pages site. Use this skill whenever the user says a course is already prepared under `course/<folder>/`, wants to publish one folder or all unpublished folders, wants image links inside markdown to work on the page, or wants to avoid re-uploading courses that were already published.
 ---
 
 # Course Issue Publisher
 
 ## Purpose
 
-Use this skill when the user wants to provide course data in chat and have you:
+Use this skill when the user wants you to publish course content that already exists on disk under `course/`.
 
-- convert it into the exact issue format required by this repo
-- publish the issue to `kevintsai1202/course-schedule`
-- wait for validation and GitHub Pages deployment
-- report the issue URL and whether the page has updated
+The skill should:
 
-## Required Input
+- read one course folder or batch-publish all unpublished course folders
+- parse the markdown file and its frontmatter
+- copy referenced local images into tracked published assets
+- create the GitHub Issue in the required repo format
+- wait for GitHub Actions and GitHub Pages to finish
+- write a local `.published.json` record so the same course is skipped next time
 
-Collect or infer these fields before publishing:
+## Expected Course Folder Format
 
-- `title`
-- `outline`
-- `content`
-- `startAt` in `YYYY-MM-DD HH:mm`
-- `endAt` in `YYYY-MM-DD HH:mm`
-- `price` where `0` means free
-- `notes` (can be empty)
-- `signupUrl`
-- `imageUrl`
+Each course uses one folder:
 
-If the user omits `notes`, use an empty string. Do not invent any other missing required field.
+```text
+course/
+  some-course/
+    course.md
+    image/
+      cover.png
+      demo.png
+    .published.json
+```
+
+The markdown file must contain frontmatter:
+
+```md
+---
+title: 課程名稱
+outline: 課程大綱摘要
+startAt: 2026-04-18 09:00
+endAt: 2026-04-19 17:00
+price: 0
+notes: 其他備註
+signupUrl: https://example.com
+image: image/cover.png
+---
+
+這裡開始是課程內容 markdown。
+
+![封面](image/cover.png)
+```
+
+Read [course-template.md](e:/github/course-schedule/skills/course-issue-publisher/references/course-template.md) when you need a starter format.
 
 ## Workflow
 
-1. Read [project-context.md](e:/github/course-schedule/skills/course-issue-publisher/references/project-context.md) if you need repo-specific details.
-2. Convert the user input into a JSON object matching the required fields.
-3. Save that JSON to a temporary file in the workspace, or pipe it via stdin.
-4. Run:
+1. Read [project-context.md](e:/github/course-schedule/skills/course-issue-publisher/references/project-context.md) if repo-specific behavior matters.
+2. Decide the source mode:
+   - one folder: `--course-dir`
+   - all unpublished folders: `--course-root course --publish-all`
+3. Run the project script instead of manually composing `gh issue create`.
+4. Inspect the returned JSON.
+5. Report the issue URL, page URL, publish result, and whether the folder was skipped because of `.published.json`.
+
+## Commands
+
+Single folder:
 
 ```powershell
-node scripts/publish-course-issue.mjs --json <temp-json-path>
+node scripts/publish-course-issue.mjs --course-dir course/<folder>
 ```
 
-5. Inspect the JSON result.
-6. Report:
-   - issue number and issue URL
-   - whether `publish-ready` / `published` was observed
-   - whether the page update was confirmed
-   - the public Pages URL
-7. If the user explicitly says this is only a test, rerun or publish with:
+Publish all unpublished folders:
 
 ```powershell
-node scripts/publish-course-issue.mjs --json <temp-json-path> --close-after-verify
+node scripts/publish-course-issue.mjs --course-root course --publish-all
+```
+
+Test mode:
+
+```powershell
+node scripts/publish-course-issue.mjs --course-dir course/<folder> --close-after-verify
 ```
 
 ## Output Format
 
 Keep the answer concise and include:
 
-- `Issue`：URL
+- `Issue`：URL 或 `略過`
 - `頁面`：URL
-- `狀態`：已發布 / 驗證失敗 / 等待逾時
-- `補充`：只有在失敗或逾時時才附錯誤原因
+- `狀態`：已發布 / 已略過 / 驗證失敗 / 等待逾時
+- `補充`：只有在失敗、逾時或略過時才附原因
 
 ## Guardrails
 
-- Always use the project script instead of hand-building a `gh issue create` command.
-- Always let the script do local validation first.
-- Never skip checking the page result unless the user explicitly says they only want issue creation.
-- If the script returns failure, relay the exact validation reason rather than paraphrasing away the actionable detail.
+- Always use the project script.
+- Always preserve `course/` as local-only source content; do not try to add `course/` to git.
+- Let the script copy only referenced images into tracked `public/published-assets/`.
+- If `.published.json` exists, treat that folder as already published unless the user explicitly asks to force republish.
+- If the user asks to republish anyway, use `--force`.
+- If frontmatter is missing required fields, report the exact missing or invalid fields.
 
-## Example
+## Example Intent
 
-**Input concept**
-
-```json
-{
-  "title": "AI 自動化免費講座",
-  "outline": "帶你看 GitHub Actions 與自動化流程",
-  "content": "介紹課程案例與示範流程",
-  "startAt": "2026-03-20 19:00",
-  "endAt": "2026-03-20 21:00",
-  "price": 0,
-  "notes": "名額有限",
-  "signupUrl": "https://example.com",
-  "imageUrl": "https://github.com/user-attachments/assets/example"
-}
-```
-
-**Expected result**
-
-- 建立合法 Issue
-- 等待 repo 自動加上 `publish-ready`
-- 確認該課程進入 `course-data.json`
-- 回報 Pages 網址與 Issue 網址
-
+- 「幫我把 `course/vibe-coding` 發出去」
+- 「把 `course` 底下還沒發過的課程全部發佈」
+- 「這門課已經有 `.published.json`，先不要重發」

@@ -49,7 +49,7 @@ export function formatPrice(price: number): string {
  * 產出卡片簡述，優先使用大綱，沒有時退回內容。
  */
 export function summarizeCourse(course: Pick<Course, "outline" | "content">): string {
-  const source = course.outline.trim() || course.content.trim();
+  const source = stripMarkdown(course.outline.trim() || course.content.trim());
   return source.length > 72 ? `${source.slice(0, 72)}…` : source;
 }
 
@@ -111,3 +111,15 @@ export function escapeHtml(text: string): string {
     .replaceAll("'", "&#39;");
 }
 
+/**
+ * 移除常見 markdown 語法，供摘要與簡短描述顯示使用。
+ */
+export function stripMarkdown(markdown: string): string {
+  return markdown
+    .replace(/!\[[^\]]*]\(([^)]+)\)/g, " ")
+    .replace(/\[([^\]]+)]\(([^)]+)\)/g, "$1")
+    .replace(/^#+\s+/gm, "")
+    .replace(/[*_`>-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}

@@ -39,10 +39,11 @@ kevintsai
 ## 專案技能
 
 - 技能目錄：`skills/course-issue-publisher/`
-- 發布腳本：`node scripts/publish-course-issue.mjs --json <path>`
-- 測試模式：`node scripts/publish-course-issue.mjs --json <path> --close-after-verify`
+- 發布單一課程：`node scripts/publish-course-issue.mjs --course-dir course/<folder>`
+- 批次發布未發布課程：`node scripts/publish-course-issue.mjs --course-root course --publish-all`
+- 測試模式：`node scripts/publish-course-issue.mjs --course-dir course/<folder> --close-after-verify`
 
-這個技能讓代理可直接根據對話提供的欄位建立合法課程 Issue，並等待 GitHub Pages 更新後回報結果。
+這個技能讓代理直接讀取本地 `course/` 目錄中的課程 markdown 與圖片，建立合法課程 Issue，等待 GitHub Pages 更新後回報結果，並在已發布目錄留下 `.published.json`。
 
 ## 標籤說明
 

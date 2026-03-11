@@ -364,6 +364,30 @@ a {
   line-height: 1.8;
 }
 
+.course-markdown > :first-child {
+  margin-top: 0;
+}
+
+.course-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.course-markdown p,
+.course-markdown li,
+.course-markdown blockquote {
+  line-height: 1.9;
+}
+
+.course-markdown ul,
+.course-markdown ol {
+  padding-left: 1.4rem;
+}
+
+.course-markdown img {
+  margin-top: 12px;
+  border-radius: 16px;
+}
+
 .page-footer {
   padding-bottom: 16px;
 }
