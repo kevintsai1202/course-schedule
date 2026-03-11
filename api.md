@@ -234,6 +234,7 @@ image: image/context/cover.png
 - 發 Issue 後輪詢標籤狀態與 `course-data.json`，確認頁面是否已上線。
 - `--close-after-verify` 只用於測試，不作為正式發布預設行為，且會等待該課程自網站移除。
 - 課程正式發布成功後，腳本會在該目錄寫入 `.published.json`，之後預設略過不再重傳。
+- `.gitignore` 只能忽略根目錄 `/course/`，不可讓 `public/published-assets/` 下名稱剛好為 `course` 的資料夾被一併排除。
 
 ## 5. GitHub Actions 事件契約
 

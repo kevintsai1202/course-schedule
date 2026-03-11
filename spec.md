@@ -361,3 +361,4 @@ stateDiagram-v2
 - 專案技能可從 `course` 目錄讀取尚未發布的課程，自動建立合法 Issue，並在課程目錄下寫入發布紀錄。
 - 若舊課程 markdown 尚未使用 frontmatter，技能會先轉換為新格式，再進入發布流程。
 - 首頁重新載入時，前端需主動避開 `course-data.json` 舊快取，降低使用者必須手動 `Ctrl + F5` 的機率。
+- `.gitignore` 僅可忽略 repo 根目錄下的 `/course/` 本地來源，不得誤傷 `public/published-assets/` 內的公開圖片資產。
