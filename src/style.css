@@ -276,6 +276,17 @@ a {
   margin-bottom: 22px;
 }
 
+.calendar-month + .calendar-month {
+  margin-top: 28px;
+}
+
+.calendar-month__title {
+  margin: 0 0 14px;
+  font-family: "Noto Serif TC", serif;
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  line-height: 1.2;
+}
+
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
