@@ -278,3 +278,4 @@ image: image/context/cover.png
 - 前端僅依賴 `course-data.json`，不直接讀 GitHub API。
 - GitHub Issue Form 說明與 parser 必須同步維護，避免欄位名稱漂移。
 - 專案技能透過本地指令呼叫 `gh` CLI 發文，需先完成 `gh auth login`。
+- 首頁焦點區的圖文呈現需避免直接以深色文字壓在複雜圖片上，並應限制封面顯示高度與比例。

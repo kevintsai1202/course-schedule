@@ -54,14 +54,22 @@ function renderFeaturedCourse(course: Course | null): string {
 
   return `
     <article class="featured-course">
-      <img src="${escapeHtml(course.imageUrl)}" alt="${escapeHtml(course.title)}" class="featured-course__image" />
+      <div class="featured-course__media">
+        <img src="${escapeHtml(course.imageUrl)}" alt="${escapeHtml(course.title)}" class="featured-course__image" />
+      </div>
       <div class="featured-course__content">
-        <span class="section-kicker">近期焦點</span>
+        <div class="featured-course__topline">
+          <span class="section-kicker">近期焦點</span>
+          <span class="featured-course__type">${course.isFree ? "免費講座" : "付費課程"}</span>
+        </div>
         <h2>${escapeHtml(course.title)}</h2>
-        <p class="featured-course__meta">${escapeHtml(formatDateRange(course))}</p>
+        <div class="featured-course__meta-row">
+          <p class="featured-course__meta">${escapeHtml(formatDateRange(course))}</p>
+          <span class="price-chip">${escapeHtml(formatPrice(course.price))}</span>
+        </div>
         <p class="featured-course__summary">${escapeHtml(summarizeCourse(course))}</p>
         <div class="featured-course__actions">
-          <span class="price-chip">${escapeHtml(formatPrice(course.price))}</span>
+          <span class="featured-course__hint">完整內容可在下方課程卡展開查看</span>
           <a class="cta-button" href="${escapeHtml(course.signupUrl)}" target="_blank" rel="noreferrer">立即報名</a>
         </div>
       </div>

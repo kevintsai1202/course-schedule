@@ -18,6 +18,7 @@
 | T12 | 將既有課程 markdown 轉為 frontmatter 並更新技能說明 | Completed | 已完成新格式轉換規則與技能文件更新 |
 | T13 | 修正首頁課程資料快取導致需手動強制重新整理 | Completed | 已加入 cache-busting、no-store 與測試 |
 | T14 | 修正 `.gitignore` 誤傷公開課程圖片資產 | Completed | 已改為只忽略根目錄 `/course/` 並完成實際發布驗證 |
+| T15 | 調整首頁焦點區圖片比例與文字可讀性 | Completed | 已改為受控圖片框與獨立資訊面板，文字可讀性改善 |
 
 ## 執行紀錄
 
@@ -39,3 +40,5 @@
 - 2026-03-12：完成 T13，已為首頁課程資料請求加入 cache-busting 與 no-store，並補上測試。
 - 2026-03-12：開始進行 T14，準備修正 `.gitignore` 對 `public/published-assets/**/image/course/` 的誤判。
 - 2026-03-12：完成 T14，已修正 `.gitignore` 範圍並以 `spring-ai-free` 實際發布驗證通過。
+- 2026-03-12：開始進行 T15，準備調整首頁焦點區的圖片比例與文字可讀性。
+- 2026-03-12：完成 T15，已縮小焦點圖顯示比例，並將文字移至獨立資訊面板提升可讀性。
