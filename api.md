@@ -100,6 +100,7 @@ https://example.com
 - 僅包含 `open` 且具備 `publish-ready` 標籤之 Issue
 - 僅包含 `endAt > 現在時間` 的課程
 - 依 `startAt` 由近到遠排序
+- 前端載入時需附帶 cache-busting 參數並使用 `no-store`，避免 GitHub Pages 或瀏覽器回傳舊版資料
 
 ## 3. 驗證狀態標籤契約
 
