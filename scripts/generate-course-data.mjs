@@ -1,8 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
-import process from "node:process";
-import { DEFAULT_TIMEZONE, LABELS } from "./lib/constants.mjs";
+import { LABELS } from "./lib/constants.mjs";
 import { listRepositoryIssues } from "./lib/github.mjs";
+import { buildSiteData, isUpcomingCourse, mergeCurrentIssue, readCurrentIssueFromEvent } from "./lib/site-data-builder.mjs";
 import { validateIssue } from "./lib/issue-validator.mjs";
 
 /**
@@ -13,29 +13,6 @@ function getAllowedPublishers() {
     .split(",")
     .map((publisher) => publisher.trim())
     .filter(Boolean);
-}
-
-/**
- * 判斷課程是否尚未結束，超過結束時間即不輸出到網站。
- */
-function isUpcomingCourse(course) {
-  return new Date(course.endAt).getTime() > Date.now();
-}
-
-/**
- * 組裝最終網站 JSON，集中排序與焦點課程挑選規則。
- */
-function buildSiteData(courses) {
-  const sortedCourses = [...courses].sort((left, right) => {
-    return new Date(left.startAt).getTime() - new Date(right.startAt).getTime();
-  });
-
-  return {
-    generatedAt: new Date().toISOString(),
-    timezone: process.env.SITE_TIMEZONE ?? DEFAULT_TIMEZONE,
-    featuredCourseId: sortedCourses[0]?.id ?? null,
-    courses: sortedCourses
-  };
 }
 
 /**
@@ -51,11 +28,12 @@ function writeCourseDataFile(siteData) {
  * 從 GitHub Issue 抓取並過濾可發布課程，輸出為靜態 JSON。
  */
 async function main() {
-  const issues = await listRepositoryIssues({
+  const allowedPublishers = getAllowedPublishers();
+  const listedIssues = await listRepositoryIssues({
     state: "open",
     labels: LABELS.publishReady
   });
-  const allowedPublishers = getAllowedPublishers();
+  const issues = mergeCurrentIssue(listedIssues, readCurrentIssueFromEvent(), allowedPublishers);
   const courses = [];
 
   for (const issue of issues) {
@@ -78,4 +56,3 @@ async function main() {
 }
 
 await main();
-
