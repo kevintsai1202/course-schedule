@@ -278,14 +278,15 @@ a {
 
 .calendar-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(248px, 1fr));
+  gap: 18px;
 }
 
 .calendar-day {
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 14px;
+  grid-template-columns: 82px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
   padding: 18px;
   border: 1px solid var(--line);
   border-radius: 22px;
@@ -294,23 +295,34 @@ a {
 
 .calendar-day__number {
   font-family: "Noto Serif TC", serif;
-  font-size: 2rem;
+  font-size: 2.35rem;
   font-weight: 900;
+  line-height: 1.05;
   color: var(--accent-deep);
 }
 
+.calendar-day__body {
+  min-width: 0;
+}
+
 .calendar-day ul {
-  margin: 10px 0 0;
-  padding-left: 18px;
+  margin: 12px 0 0;
+  padding-left: 1.1rem;
 }
 
 .calendar-day li + li {
   margin-top: 8px;
 }
 
+.calendar-day li {
+  line-height: 1.6;
+}
+
 .calendar-day a {
+  display: block;
   color: var(--ink);
   text-decoration: none;
+  overflow-wrap: anywhere;
 }
 
 .calendar-day a:hover,
